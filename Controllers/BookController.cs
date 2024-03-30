@@ -13,6 +13,16 @@ public class BookController : ControllerBase
     [HttpPost]
     public IActionResult CreateBook([FromBody] RequestBookJson request)
     {
+        if (request.Name is null)
+        {
+            return BadRequest(new { Erro = "É necessário que informe um nome para o livro."});
+        }
+
+        if (request.Quantity == 0)
+        {
+            return BadRequest(new { Erro = "É necessário que informe a quantidade de livros" });
+        }
+
         var response = MapToEntity(request);
 
         books.Add(response);
@@ -33,7 +43,7 @@ public class BookController : ControllerBase
     {
         return books.Count == 0 ? Ok(new
         {
-            message = "Você não possui livros cadastrados."
+            Message = "Você não possui livros cadastrados."
         }) : Ok(books);
     }
 
@@ -50,6 +60,12 @@ public class BookController : ControllerBase
         books.Remove(book);
 
         return Ok(new { Message = "Livro removido com sucesso." });
+
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateBook()
+    {
 
     }
 
