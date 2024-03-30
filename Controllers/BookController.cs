@@ -7,7 +7,6 @@ namespace MyBookStore.Controllers;
 [ApiController]
 public class BookController : ControllerBase
 {
-
     private static readonly List<Book> books = [];
 
     [HttpPost]
@@ -63,10 +62,18 @@ public class BookController : ControllerBase
 
     }
 
-    [HttpPut("{id}")]
-    public IActionResult UpdateBook()
+    [HttpPut("{id:int}")]
+    public IActionResult UpdateBook(int id, RequestBookJson request)
     {
 
+        var currentBook = books.FirstOrDefault(book => book.Id == id);
+        currentBook.Title = request.Name;
+        currentBook.Author = request.Author;
+        currentBook.Gender = request.Gender;
+        currentBook.Price = request.Price;
+        currentBook.Quantity = request.Quantity;
+
+        return Ok(currentBook);
     }
 
     private static ResponseBookJson MapToResponse(Book book)
@@ -96,5 +103,4 @@ public class BookController : ControllerBase
 
         };
     }
-
 }
