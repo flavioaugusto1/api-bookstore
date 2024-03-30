@@ -23,9 +23,7 @@ public class BookController : ControllerBase
     [HttpGet("{id:int}")]
     public IActionResult GetBookById(int id)
     {
-        Func<Book, bool> byid = x => x.Id == id;
-
-        var book = books.FirstOrDefault(byid);
+        var book = books.FirstOrDefault(x => x.Id == id);
 
         return book is null ? NotFound() : Ok(MapToResponse(book));
     }
@@ -37,6 +35,22 @@ public class BookController : ControllerBase
         {
             message = "Você não possui livros cadastrados."
         }) : Ok(books);
+    }
+
+    [HttpDelete("{id:int}")]
+    public IActionResult DeleteBook(int id)
+    {
+        var book = books.FirstOrDefault(item => item.Id == id);
+
+        if(book is null)
+        {
+            return NotFound(new { Erro = "Não foi possível localizar esse livro." });
+        }
+
+        books.Remove(book);
+
+        return Ok(new { Message = "Livro removido com sucesso." });
+
     }
 
     private static ResponseBookJson MapToResponse(Book book)
