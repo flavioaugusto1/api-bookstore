@@ -62,18 +62,18 @@ public class BookController : ControllerBase
 
     }
 
-    [HttpPut("{id:int}")]
-    public IActionResult UpdateBook(int id, RequestBookJson request)
+    [HttpPatch("{id:int}")]
+    public IActionResult UpdateBook(int id, RequestUpdateBookJson request)
     {
 
         var currentBook = books.FirstOrDefault(book => book.Id == id);
-        currentBook.Title = request.Name;
-        currentBook.Author = request.Author;
-        currentBook.Gender = request.Gender;
-        currentBook.Price = request.Price;
-        currentBook.Quantity = request.Quantity;
+        currentBook.Title = request.Name ?? currentBook.Title;
+        currentBook.Author = request.Author ?? currentBook.Author;
+        currentBook.Gender = request.Gender ?? currentBook.Gender;
+        currentBook.Price = request.Price != 0 ? request.Price : currentBook.Price;
+        currentBook.Quantity = request.Quantity != 0 ? request.Quantity : currentBook.Quantity;
 
-        return Ok(currentBook);
+        return Ok(MapToResponse(currentBook));
     }
 
     private static ResponseBookJson MapToResponse(Book book)
